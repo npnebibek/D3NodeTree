@@ -1,0 +1,7 @@
+<h1>Driver Tree</h1>
+<!--<app-tree></app-tree>-->
+<cck-driver-tree
+  [(treeData)]="data"
+  (onNodeChanged)="nodeUpdated($event)"
+  (onNodeSelected)="nodeSelected($event)">
+</cck-driver-tree>

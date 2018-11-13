@@ -1,0 +1,34 @@
+{
+    "name": "animal",
+    "type": "complex",
+    "formula": "abcd",
+    "children": [{
+        "name": "mammal",
+        "type":"complex",
+        "formula":"abcd",
+        "children": [{
+            "name": "dog",
+            "type":"complex",
+            "formula":"abcd"
+        },{
+            "name": "cat",
+            "type":"complex",
+            "formula":"abcd"
+
+        }]
+
+    }, {
+        "name": "aves",
+        "type":"complex",
+        "formula":"abcd",
+        "children": [{
+            "name": "crow",
+            "type":"complex",
+            "formula":"abcd"
+        }, {
+            "name": "hawk",
+            "type":"complex",
+            "formula":"abcd"
+        }]
+    }]
+}
