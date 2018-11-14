@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
 import { TreeComponent } from './components/tree/tree.component';
-import {CoreComponentKitModule} from '../../projects/core-component-kit/src/lib/core-component-kit.module';
+
 
 @NgModule({
   declarations: [
@@ -11,8 +11,7 @@ import {CoreComponentKitModule} from '../../projects/core-component-kit/src/lib/
     TreeComponent
   ],
   imports: [
-    BrowserModule,
-    CoreComponentKitModule
+    BrowserModule
   ],
   providers: [],
   bootstrap: [AppComponent]
