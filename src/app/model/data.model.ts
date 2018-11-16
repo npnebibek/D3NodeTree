@@ -1,6 +1,5 @@
 import * as d3 from 'd3';
 
-/* based on http://bl.ocks.org/robschmuecker/7880033 */
 export class DriverTreeModel {
 
   root: any;
@@ -11,13 +10,13 @@ export class DriverTreeModel {
 
   height: number;
   width: number;
-  margin: any = { top: 200, bottom: 90, left: 100, right: 90};
+  margin: any = { top: 200, bottom: 90, left: 600, right: 90};
   duration = 750;
   nodeWidth = 1;
   nodeHeight = 1;
-  nodeRadius = 5;
-  horizontalSeparationBetweenNodes = 1;
-  verticalSeparationBetweenNodes = 1;
+  nodeRadius = 6;
+  horizontalSeparationBetweenNodes = 3;
+  verticalSeparationBetweenNodes = 3;
   nodeTextDistanceY = '-5px';
   nodeTextDistanceX = 5;
 
@@ -40,6 +39,7 @@ export class DriverTreeModel {
     this.svg = d3.select(element).append('svg')
       .attr('width', element.offsetWidth)
       .attr('height', element.offsetHeight)
+      .attr('class', 'svgContainer')// class name for the container
       .append('g')
       .attr('transform', 'translate('
         + this.margin.left + ',' + this.margin.top + ')');

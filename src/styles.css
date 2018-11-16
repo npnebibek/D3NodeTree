@@ -1,1 +1,54 @@
 /* You can add global styles to this file, and also import other style files */
+
+.node {
+    cursor: pointer;
+  }
+  
+  .overlay{
+      background-color:#EEE;
+  }
+   
+  .node circle {
+    fill: #fff;
+    stroke: black;
+    stroke-width: 1.5px;
+  }
+   
+  .node text {
+    font-size:10px; 
+    font-family:sans-serif;
+  }
+   
+  .link {
+    fill: none;
+    stroke:grey;
+    stroke-width: 1.5px;
+  }
+  
+  .templink {
+    fill: none;
+    stroke:black;
+    stroke-width: 3px;
+  }
+  
+  .ghostCircle.show{
+      display:block;
+  }
+  
+  .ghostCircle, .activeDrag .ghostCircle{
+       display: none;
+  }
+  
+  .hidden {
+          display: none;
+  }
+
+  .driver-tree {
+    width: 100%;
+    min-height:900px;
+  }
+  
+  
+
+
+

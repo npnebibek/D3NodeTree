@@ -8,7 +8,7 @@ import { TreeComponent } from './components/tree/tree.component';
 @NgModule({
   declarations: [
     AppComponent,
-    TreeComponent
+    TreeComponent,
   ],
   imports: [
     BrowserModule
