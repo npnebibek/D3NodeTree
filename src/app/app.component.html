@@ -1,5 +1,7 @@
 <app-driver-tree
   [(treeData)]="data"
   (onNodeChanged)="nodeUpdated($event)"
-  (onNodeSelected)="nodeSelected($event)">
+  (onNodeSelected)="nodeSelected($event)"
+  (contextMenu)="onContextMenu($event, item)">
+  
 </app-driver-tree>

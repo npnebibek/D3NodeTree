@@ -1,30 +1,20 @@
 import { Component } from '@angular/core';
-import {DriverTreeService} from '../app/services/tree.service';
-
-const dataTreeSimple = {
-  'result': [
-    {'id': '1', 'description': 'root'},
-    {'id': '2', 'description': '2', 'parent': '1'},
-    {'id': '3', 'description': '3', 'parent': '1'},
-    {'id': '4', 'description': '4', 'parent': '2'},
-    {'id': '5', 'description': '5', 'parent': '3'},
-    {'id': '6', 'description': '6', 'parent': '3'},
-    {'id': '7', 'descripition': '7', 'parent': '2'},
-    {'id': '8', 'description': '8', 'parent': '2'},
-    {'id': '9', 'description': '9', 'parent': '2'}
-  ]
-};
+import {Http} from '@angular/http';
+import { ContextMenuService } from 'ngx-contextmenu';
 
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
 })
 export class AppComponent {
+
   title = 'app';
   data: any[];
-  constructor(private driverTreeService: DriverTreeService) {
-    this.data = dataTreeSimple.result;
+  constructor(private http: Http,
+  private contextMenuService: ContextMenuService) {
+    this.http.get('../assets/data.json').subscribe(res => this.data = res.json());
   }
+
   selectedNode: any;
   nodeUpdated(node: any) {
     // tslint:disable-next-line:no-console
@@ -35,4 +25,10 @@ export class AppComponent {
     console.info('app detected node selected', node);
     this.selectedNode = node;
   }
+
+  onContextMenu($event: MouseEvent, item: any): void {
+    this.contextMenuService.show.next({ event: $event, item: item });
+    $event.preventDefault();
+  }
+
 }

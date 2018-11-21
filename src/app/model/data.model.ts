@@ -1,4 +1,7 @@
 import * as d3 from 'd3';
+import * as _ from 'underscore';
+import * as contextMenuService from 'ngx-contextmenu';
+
 
 export class DriverTreeModel {
 
@@ -7,16 +10,19 @@ export class DriverTreeModel {
   svg: any;
 
   treeData: any;
+  contextMenuService: any;
 
   height: number;
   width: number;
-  margin: any = { top: 200, bottom: 90, left: 600, right: 90};
+  margin: any = { top: 200, bottom: 100, left: 400, right: 90};
+  rectNode = { width : 120, height : 45, textMargin : 5};
   duration = 750;
   nodeWidth = 1;
   nodeHeight = 1;
   nodeRadius = 6;
-  horizontalSeparationBetweenNodes = 3;
-  verticalSeparationBetweenNodes = 3;
+  maxDepth = 0;
+  horizontalSeparationBetweenNodes = 5;
+  verticalSeparationBetweenNodes = 4;
   nodeTextDistanceY = '-5px';
   nodeTextDistanceX = 5;
 
@@ -29,7 +35,6 @@ export class DriverTreeModel {
   previousClickedDomNode: any;
 
   constructor() {}
-
   addSvgToContainer(chartContainer: any) {
     const element = chartContainer.nativeElement;
 
@@ -39,7 +44,7 @@ export class DriverTreeModel {
     this.svg = d3.select(element).append('svg')
       .attr('width', element.offsetWidth)
       .attr('height', element.offsetHeight)
-      .attr('class', 'svgContainer')// class name for the container
+      .attr('class', 'svgContainer')
       .append('g')
       .attr('transform', 'translate('
         + this.margin.left + ',' + this.margin.top + ')');
@@ -65,16 +70,13 @@ export class DriverTreeModel {
       .size([this.height, this.width])
       .nodeSize([this.nodeWidth + this.horizontalSeparationBetweenNodes, this.nodeHeight + this.verticalSeparationBetweenNodes])
       .separation((a, b) => a.parent === b.parent ? 10 : 20);
+
   }
 
   createTreeData(treeData: any) {
-    this.root = d3.stratify<any>()
-      .id(function(d) { return d.id; })
-      .parentId(function(d) { return d.parent; })
-      (treeData);
+    this.root = d3.hierarchy(treeData);
     this.root.x0 = this.height / 2;
     this.root.y0 = 0;
-
     this.root.children.map((d) => this.collapse(d));
   }
 
@@ -88,7 +90,10 @@ export class DriverTreeModel {
   expand(d) {
     if (d._children) {
       d.children = d._children;
-      d.children.map((d) => this.expand(d));
+      // tslint:disable-next-line:no-shadowed-variable
+      d.children.map((d) => {
+        return this.expand(d);
+      });
       d.children = null;
     }
   }
@@ -118,25 +123,29 @@ export class DriverTreeModel {
     const i = 0;
     const treeModel = this;
 
+    // Normalize the node for fixed depth
     nodes.forEach(function(d) { d.y = d.depth * 180; });
 
     const node = this.svg.selectAll('g.node')
       .data(nodes, function(d) {return d.id || (d.id = ++this.i); });
 
-    const nodeEnter = node.enter().append('g')
+    // Use 'insert' instead of 'append'
+    const nodeEnter = node.enter().insert('g')
       .attr('class', 'node')
       .attr('transform', function(d) {
         return 'translate(' + source.y0 + ',' + source.x0 + ')';
       });
 
-    nodeEnter.append('circle')
-      .attr('class', 'node')
-      .attr('r', 1e-6)
-      .style('fill', function(d) {
-        return d._children ? 'lightsteelblue' : '#fff';
-      });
+    nodeEnter.append('g').append('rect')
+      .attr('class', 'node-rect')
+      .attr('rx', 6)
+      .attr('ry', 6)
+      .attr('width', this.rectNode.width)
+      .attr('height', this.rectNode.height);
 
+    // ForiegnObject will be used to add text inside the rectangles
     nodeEnter.append('text')
+      .attr('class', 'text')
       .attr('dy', this.nodeTextDistanceY )
       .attr('x', function(d) {
         return d.children || d._children ? -1 : 1;
@@ -148,20 +157,6 @@ export class DriverTreeModel {
         return d.data.name || d.data.description || d.id;
       });
 
-    nodeEnter.append('circle')
-      .attr('class', 'ghostCircle')
-      .attr('r', this.nodeRadius * 2)
-      .attr('opacity', 0.2) // change this to zero to hide the target area
-      .style('fill', 'red')
-      .attr('pointer-events', 'mouseover')
-      .on('mouseover', function(node) {
-        treeModel.overCircle(node);
-        this.classList.add('over');
-      })
-      .on('mouseout', function(node) {
-        treeModel.outCircle(node);
-        this.classList.remove('over');
-      });
     const nodeUpdate = nodeEnter.merge(node);
 
     nodeUpdate.transition()
@@ -170,12 +165,8 @@ export class DriverTreeModel {
         return 'translate(' + d.y + ',' + d.x + ')';
       });
 
-    nodeUpdate.select('circle.node')
-      .attr('r', this.nodeRadius)
-      .style('fill', function(d) {
-        return d._children ? 'lightsteelblue' : '#fff';
-      })
-      .attr('cursor', 'pointer');
+    nodeUpdate.select('rect')
+       .attr('class', function(d) { return d._children ? 'node-rect-closed' : 'node-rect'; });
 
     const nodeExit = node.exit().transition()
       .duration(this.duration)
@@ -184,17 +175,13 @@ export class DriverTreeModel {
       })
       .remove();
 
-    // On exit reduce the node circles size to 0
-    nodeExit.select('circle')
-      .attr('r', 1e-6);
-
     // Store the old positions for transition.
     nodes.forEach(function(d) {
       d.x0 = d.x;
       d.y0 = d.y;
     });
     // On exit reduce the opacity of text labels
-    nodeExit.select('text')
+   nodeExit.select('text')
       .style('fill-opacity', 1e-6);
 
     nodeEnter
@@ -272,7 +259,7 @@ export class DriverTreeModel {
     function dragEnd(d) {
       d3.select(this).classed('active', false);
 
-      d3.selectAll('.ghostCircle').attr('class', 'ghostCircle');
+      d3.selectAll('rect').attr('class', 'rect');
       d3.select(this).attr('class', 'node');
 
       if (d === treeModel.root) {
@@ -344,7 +331,7 @@ export class DriverTreeModel {
     const linkEnter = link.enter().insert('path', 'g')
       .attr('class', 'link')
       .attr('d', (d) => {
-        const o = {x: source.x0, y: source.y0};
+        const o = {x: source.x, y: source.y};
         return this.diagonalCurvedPath(o, o);
       });
 
@@ -413,12 +400,10 @@ export class DriverTreeModel {
       this.update(this.root);
     }
   }
-
   // events
   nodechanged(node) {
     // tslint:disable-next-line:no-console
     console.info('nodechanged default');
   }
   nodeselected(node) {}
-
 }

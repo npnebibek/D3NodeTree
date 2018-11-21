@@ -1,54 +1,60 @@
-/* You can add global styles to this file, and also import other style files */
+
+
+.svgContainer {
+	display: block;
+    margin: auto;
+}
 
 .node {
-    cursor: pointer;
-  }
-  
-  .overlay{
-      background-color:#EEE;
-  }
-   
-  .node circle {
-    fill: #fff;
-    stroke: black;
-    stroke-width: 1.5px;
-  }
-   
-  .node text {
-    font-size:10px; 
-    font-family:sans-serif;
-  }
-   
-  .link {
-    fill: none;
-    stroke:grey;
-    stroke-width: 1.5px;
-  }
-  
-  .templink {
-    fill: none;
-    stroke:black;
-    stroke-width: 3px;
-  }
-  
-  .ghostCircle.show{
-      display:block;
-  }
-  
-  .ghostCircle, .activeDrag .ghostCircle{
-       display: none;
-  }
-  
-  .hidden {
-          display: none;
-  }
+	cursor: pointer;
+	fill: #CC0000;
+}
 
-  .driver-tree {
-    width: 100%;
-    min-height:900px;
-  }
-  
-  
+.node-rect {
+	fill: darkgray;
+	
+}
 
+.node-rect:before{
+    content: "";
+    display: block;
+    padding-top: 25%;
+}
 
+.node-rect-closed {
+	stroke-width: 3px;
+	stroke: rgb(241, 240, 240);
+}
 
+.link {
+	fill: none;
+	stroke: rgb(152, 197, 241);
+	stroke-width: 2px;
+}
+
+.linkselected {
+	fill: none;
+	stroke: tomato;
+	stroke-width: 2px;
+}
+
+.link text {
+	font: 7px sans-serif;
+	fill: black;
+}
+
+.wordwrap {
+	white-space: pre-wrap; /* CSS3 */
+	white-space: -moz-pre-wrap; /* Firefox */
+	white-space: -pre-wrap; /* Opera <7 */
+	white-space: -o-pre-wrap; /* Opera 7 */
+	word-wrap: break-word; /* IE */
+}
+
+.text {
+	font: 7px sans-serif;
+	fill: black;
+}
+p {
+	display: inline;
+}

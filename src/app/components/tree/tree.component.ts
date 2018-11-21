@@ -1,20 +1,33 @@
 import { Component, OnInit, OnChanges, ViewChild, ElementRef, Input, Output, EventEmitter} from '@angular/core';
 import {DriverTreeService} from '../../services/tree.service';
+import {ContextMenuComponent, ContextMenuService } from 'ngx-contextmenu';
 
 @Component({
   selector: 'app-driver-tree',
   templateUrl: './tree.component.html',
-  styleUrls: ['./tree.component.css']
+  styleUrls: ['./tree.component.less']
 })
 export class TreeComponent implements OnInit, OnChanges {
   @ViewChild('chart') private chartContainer: ElementRef;
-  @Input() private treeData: any = [];
+  @ViewChild('basicMenu') public basicMenu: ContextMenuComponent;
+  @Input() treeData: any = [];
+
+  @Input() items: any[] = [
+    {name: 'Rename node'},
+    {name: 'delete node'},
+    {name: 'create node'}
+
+  ];
   // tslint:disable-next-line:no-output-on-prefix
   @Output() onNodeChanged: EventEmitter<any> = new EventEmitter();
   // tslint:disable-next-line:no-output-on-prefix
   @Output() onNodeSelected: EventEmitter<any> = new EventEmitter();
+  // tslint:disable-next-line:no-output-on-prefix
+  @Output() contextMenu: EventEmitter<any> = new EventEmitter();
 
-  constructor( private treeService: DriverTreeService ) {
+
+  constructor( private treeService: DriverTreeService,
+  private contextMenuService: ContextMenuService) {
     treeService.setNodeChangedListener((node) => {
       this.onNodeChanged.emit(node);
     });
@@ -22,6 +35,7 @@ export class TreeComponent implements OnInit, OnChanges {
       this.onNodeSelected.emit(node);
     });
   }
+
 
   ngOnInit() {
   }
@@ -36,4 +50,7 @@ export class TreeComponent implements OnInit, OnChanges {
       this.treeService.update();
     }
   }
+
 }
+
+
