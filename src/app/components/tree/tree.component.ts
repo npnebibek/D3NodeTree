@@ -9,7 +9,7 @@ import {ContextMenuComponent, ContextMenuService } from 'ngx-contextmenu';
 })
 export class TreeComponent implements OnInit, OnChanges {
   @ViewChild('chart') private chartContainer: ElementRef;
-  @ViewChild('basicMenu') public basicMenu: ContextMenuComponent;
+  @ViewChild('rightClickMenu') public rightClickMenu: ContextMenuComponent;
   @Input() treeData: any = [];
 
   @Input() items: any[] = [
@@ -26,14 +26,7 @@ export class TreeComponent implements OnInit, OnChanges {
   @Output() contextMenu: EventEmitter<any> = new EventEmitter();
 
 
-  constructor( private treeService: DriverTreeService,
-  private contextMenuService: ContextMenuService) {
-    treeService.setNodeChangedListener((node) => {
-      this.onNodeChanged.emit(node);
-    });
-    treeService.setNodeSelectedListener((node) => {
-      this.onNodeSelected.emit(node);
-    });
+  constructor( private treeService: DriverTreeService, private contextMenuService: ContextMenuService) {
   }
 
 
@@ -50,6 +43,19 @@ export class TreeComponent implements OnInit, OnChanges {
       this.treeService.update();
     }
   }
+
+    public onMenuSelect($event: MouseEvent, item: any): void {
+        if ($event.toElement.nodeName === 'circle') {
+            this.contextMenuService.show.next( {
+                // Optional - if unspecified, all context menu components will open
+                contextMenu: this.rightClickMenu,
+                event: $event,
+                item: item,
+            });
+            $event.stopPropagation();
+        }
+        $event.preventDefault();
+    }
 
 }
 

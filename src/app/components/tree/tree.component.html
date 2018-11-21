@@ -1,19 +1,17 @@
 
 <h1>Node Tree</h1>
-<div
-class="driver-tree"
-#chart>
-<table>
-  <tbody>
-    <tr *ngFor="let item of items" (contextmenu)="onContextMenu($event, item); false">
-     <td>{{item[0]}}</td>
-     <td>{{item[1]}}</td>
-     <td>{{item[2]}}</td>
-    </tr>
-   </tbody>
-  </table>
+<div class="driver-tree" #chart [contextMenu]="rightClickMenu"></div>
 
 
-
-
-
+<context-menu #rightClickMenu [disabled]=false>
+    <ng-template contextMenuItem (execute)="onMenuSelect($event, null)">
+        Add
+    </ng-template>
+    <ng-template contextMenuItem divider="true"></ng-template>
+    <ng-template contextMenuItem let-item (execute)="onMenuSelect($event, null)">
+        Edit
+    </ng-template>
+    <ng-template contextMenuItem passive="true">
+        Delete
+    </ng-template>
+</context-menu>
