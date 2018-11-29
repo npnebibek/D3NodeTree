@@ -12,10 +12,10 @@ export class TreeComponent implements OnInit, OnChanges {
   @ViewChild('rightClickMenu') public rightClickMenu: ContextMenuComponent;
   @Input() treeData: any = [];
 
-  @Input() items: any[] = [
-    {name: 'Rename node'},
-    {name: 'delete node'},
-    {name: 'create node'}
+  public items: any[] = [
+    {name: 'AddNode'},
+    {name: 'RenameNode'},
+    {name: 'DeleteNode'}
 
   ];
   // tslint:disable-next-line:no-output-on-prefix
@@ -26,7 +26,9 @@ export class TreeComponent implements OnInit, OnChanges {
   @Output() contextMenu: EventEmitter<any> = new EventEmitter();
 
 
-  constructor( private treeService: DriverTreeService, private contextMenuService: ContextMenuService) {
+
+  constructor( private treeService: DriverTreeService, private contextMenuService: ContextMenuService,
+     ) {
   }
 
 
@@ -43,18 +45,16 @@ export class TreeComponent implements OnInit, OnChanges {
       this.treeService.update();
     }
   }
+    public onAddSelected($event: MouseEvent, item: any): void {
+        console.log('addnode');
+    }
 
-    public onMenuSelect($event: MouseEvent, item: any): void {
-        if ($event.toElement.nodeName === 'circle') {
-            this.contextMenuService.show.next( {
-                // Optional - if unspecified, all context menu components will open
-                contextMenu: this.rightClickMenu,
-                event: $event,
-                item: item,
-            });
-            $event.stopPropagation();
-        }
-        $event.preventDefault();
+    public onDeleteSelected($event: MouseEvent, item: any): void {
+        console.log('deleteNode');
+    }
+
+    public onRenameSelected($event: MouseEvent, item: any): void {
+        console.log('renameNode');
     }
 
 }

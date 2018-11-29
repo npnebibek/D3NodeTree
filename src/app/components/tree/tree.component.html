@@ -1,17 +1,23 @@
 
 <h1>Node Tree</h1>
-<div class="driver-tree" #chart [contextMenu]="rightClickMenu"></div>
+<div class="driver-tree" #chart [contextMenu]="rightClickMenu">
 
+<ul>
+    <li *ngFor="let item of items" [contextMenu]="rightClickMenu" [contextMenuSubject]="item">Right Click: {{item?.name}}</li>
+</ul>
 
-<context-menu #rightClickMenu [disabled]=false>
-    <ng-template contextMenuItem (execute)="onMenuSelect($event, null)">
-        Add
+<context-menu  #rightClickMenu [disabled]=false>
+    <ng-template contextMenuItem let-item (execute)="onAddSelected($event, item)">
+        Add Node
     </ng-template>
     <ng-template contextMenuItem divider="true"></ng-template>
-    <ng-template contextMenuItem let-item (execute)="onMenuSelect($event, null)">
-        Edit
+    <ng-template contextMenuItem let-item (execute)="onRenameSelected($event, item)">
+        Rename Node
     </ng-template>
-    <ng-template contextMenuItem passive="true">
-        Delete
+    <ng-template contextMenuItem divider="true"></ng-template>
+    <ng-template contextMenuItem let-item (execute)="onDeleteSelected($event, item)">
+        Delete Node
     </ng-template>
 </context-menu>
+</div>
+
