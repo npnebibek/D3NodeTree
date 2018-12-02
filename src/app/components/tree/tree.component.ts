@@ -27,8 +27,7 @@ export class TreeComponent implements OnInit, OnChanges {
 
 
 
-  constructor( private treeService: DriverTreeService, private contextMenuService: ContextMenuService,
-     ) {
+  constructor( private treeService: DriverTreeService) {
   }
 
 
@@ -51,6 +50,7 @@ export class TreeComponent implements OnInit, OnChanges {
 
     public onDeleteSelected($event: MouseEvent, item: any): void {
         console.log('deleteNode');
+        this.treeService.deleteNode($event.target);
     }
 
     public onRenameSelected($event: MouseEvent, item: any): void {

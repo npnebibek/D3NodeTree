@@ -40,4 +40,8 @@ export class DriverTreeService {
     this.driverTreeModal.addNode(node);
   }
 
+  deleteNode(node: any) {
+    this.driverTreeModal.deleteNode(node);
+  }
+
 }

@@ -385,6 +385,20 @@ export class DriverTreeModel {
     return [(y = +y) * Math.cos(x -= Math.PI / 2), y * Math.sin(x)];
   }
 
+  visit(parent, visitFn, childrenFn) {
+    if (!parent) { return; }
+
+    visitFn(parent);
+
+    const children = childrenFn(parent);
+    if (children) {
+        const count = children.length;
+        for (let i = 0; i < count; i++) {
+            this.visit(children[i], visitFn, childrenFn);
+        }
+    }
+}
+
   addNode(newNode: any) {
     if (this.selectedNodeByClick) {
       if (this.selectedNodeByClick.children) {
@@ -400,6 +414,24 @@ export class DriverTreeModel {
       this.update(this.root);
     }
   }
+
+   deleteNode(node) {
+    this.visit(this.treeData, function(d) {
+           if (d.children) {
+                   for (const child of d.children) {
+                           if (child === node) {
+                                   d.children = _.without(d.children, child);
+                                   this.update(this.root);
+                                   break;
+                           }
+                   }
+           }
+    },
+    function(d) {
+       return d.children && d.children.length > 0 ? d.children : null;
+   });
+}
+
   // events
   nodechanged(node) {
     // tslint:disable-next-line:no-console
